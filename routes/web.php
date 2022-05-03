@@ -12,17 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', [\App\Http\Controllers\ProductsController::class, 'index']);
-
-Route::group(['prefix' => 'Products'], function(){
-    Route::post('/Save', [\App\Http\Controllers\ProductsController::class, 'save']);
-    Route::post('/Update/{products}', [\App\Http\Controllers\ProductsController::class, 'update']);
-});
-
 Route::get('/createUser', function(){
     $user = new \App\Models\User();
-
     $user->name = 'nicolas';
     $user->email = 'nicolas@nicolas.com';
     $user->password = bcrypt('Saray1420');
@@ -31,7 +22,17 @@ Route::get('/createUser', function(){
 });
 
 Route::get('login', function(){
-//    \Auth::login(\App\Models\User::find(1));
+    \Auth::login(\App\Models\User::find(1));
     return \Auth::user();
 });
+
+Route::get('/', [\App\Http\Controllers\ProductsController::class, 'index']);
+
+Route::group(['prefix' => 'Products', 'middleware' => 'auth'], function(){
+    Route::post('/Save', [\App\Http\Controllers\ProductsController::class, 'save']);
+    Route::put('/Update/{products}', [\App\Http\Controllers\ProductsController::class, 'update']);
+    Route::delete('/Delete/{products}', [\App\Http\Controllers\ProductsController::class, 'delete']);
+});
+
+
 
